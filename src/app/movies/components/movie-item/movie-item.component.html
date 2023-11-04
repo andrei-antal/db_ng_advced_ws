@@ -28,7 +28,7 @@
             movieComment.trim().length === 0 ? 'darkred' : 'darkgreen'
           "
         >
-          {{ wordCount(movieComment) }} words
+          {{ movieComment | wordCount }}
         </small>
       </div>
       <ng-template #readonlyComment>

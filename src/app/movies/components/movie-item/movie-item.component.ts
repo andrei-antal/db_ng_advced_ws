@@ -10,6 +10,7 @@ import { Movie } from '../../model/movie';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { WordCountPipe } from '../../pipes/word-count.pipe';
 
 export interface CommentUpdate {
   id: string;
@@ -19,7 +20,7 @@ export interface CommentUpdate {
 @Component({
   selector: 'ngm-movie-item',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule],
+  imports: [FormsModule, CommonModule, RouterModule, WordCountPipe],
   templateUrl: './movie-item.component.html',
   styleUrls: ['./movie-item.component.scss'],
 })
@@ -36,14 +37,6 @@ export class MovieItemComponent implements OnChanges {
     if (changes['movie']) {
       this.movieComment = changes['movie'].currentValue.comment;
       this.commentSaved = this.movieComment.length > 0;
-    }
-  }
-
-  wordCount(comment: string): number {
-    if (!comment || comment.length === 0) {
-      return 0;
-    } else {
-      return comment.trim().replace(/  +/g, ' ').split(' ').length;
     }
   }
 
