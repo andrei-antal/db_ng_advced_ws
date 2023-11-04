@@ -7,6 +7,9 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { Movie } from '../../model/movie';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 export interface CommentUpdate {
   id: string;
@@ -15,6 +18,8 @@ export interface CommentUpdate {
 
 @Component({
   selector: 'ngm-movie-item',
+  standalone: true,
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './movie-item.component.html',
   styleUrls: ['./movie-item.component.scss'],
 })
