@@ -1,8 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, catchError, of, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  interval,
+  merge,
+  of,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { EMPTY_MOVIE, Movie } from '../model/movie';
 import { environment } from '../../../environments/environment';
+
+const REFRESH_INTERVAL = 60000;
 
 @Injectable({
   providedIn: 'root',
@@ -10,28 +22,41 @@ import { environment } from '../../../environments/environment';
 export class MovieService {
   #movieApi = `${environment.apiUrl}/movies`;
   #genreApi = `${environment.apiUrl}/genres`;
-  #movies$ = new Subject<Movie[]>();
-  movies$ = this.#movies$.asObservable();
+  #cache$!: Observable<Movie[]>;
+  #reload$ = new BehaviorSubject(null);
 
   constructor(private http: HttpClient) {}
 
-  getMovies(searchTerm = ''): void {
-    this.http
-      .get<Movie[]>(`${this.#movieApi}?q=${searchTerm.trim()}`)
-      .pipe(catchError(() => of([])))
-      .subscribe((data) => this.#movies$.next(data));
+  getMovies(searchTerm?: string): Observable<Movie[]> {
+    if (!this.#cache$ || searchTerm !== undefined) {
+      this.#cache$ = merge(this.#reload$, interval(REFRESH_INTERVAL)).pipe(
+        switchMap(() =>
+          this.http
+            .get<Movie[]>(
+              `${this.#movieApi}?q=${searchTerm ? searchTerm.trim() : ''}`
+            )
+            .pipe(catchError(() => of([])))
+        ),
+        shareReplay(1)
+      );
+    }
+    return this.#cache$;
+  }
+
+  reloadData() {
+    this.#reload$.next(null);
   }
 
   updateComment(movieId: string, newComment: string): Observable<Movie> {
     return this.http
       .patch<Movie>(`${this.#movieApi}/${movieId}`, { comment: newComment })
-      .pipe(tap(() => this.getMovies()));
+      .pipe(tap(() => this.reloadData()));
   }
 
   deleteMovie(movieId: string): Observable<any> {
     return this.http
       .delete(`${this.#movieApi}/${movieId}`)
-      .pipe(tap(() => this.getMovies()));
+      .pipe(tap(() => this.reloadData()));
   }
 
   getMovie(movieId: string): Observable<Movie> {
@@ -56,6 +81,6 @@ export class MovieService {
   updateRating(movieId: string, rating: number): Observable<Movie> {
     return this.http
       .patch<Movie>(`${this.#movieApi}/${movieId}`, { rating })
-      .pipe(tap(() => this.getMovies()));
+      .pipe(tap(() => this.reloadData()));
   }
 }

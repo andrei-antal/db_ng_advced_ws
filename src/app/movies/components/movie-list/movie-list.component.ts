@@ -1,11 +1,11 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CommentUpdate,
   MovieItemComponent,
 } from '../movie-item/movie-item.component';
 import { MovieService } from '../../services/movie.service';
-import { Subject, debounceTime, startWith, takeUntil } from 'rxjs';
+import { Subject, debounceTime, startWith, switchMap, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -21,24 +21,18 @@ import { RouterModule } from '@angular/router';
   templateUrl: './movie-list.component.html',
   styleUrls: ['./movie-list.component.scss'],
 })
-export class MovieListComponent implements OnInit, AfterViewInit, OnDestroy {
-  movies$ = this.movieService.movies$;
-  searchField = new FormControl('');
+export class MovieListComponent implements OnDestroy {
   #destroy$ = new Subject<void>();
+  searchField = new FormControl('', { nonNullable: true });
+
+  movies$ = this.searchField.valueChanges.pipe(
+    debounceTime(300),
+    startWith(undefined),
+    switchMap((searchTerm) => this.movieService.getMovies(searchTerm)),
+    takeUntil(this.#destroy$)
+  );
 
   constructor(public movieService: MovieService) {}
-
-  ngOnInit(): void {
-    this.movieService.getMovies();
-  }
-
-  ngAfterViewInit(): void {
-    this.searchField.valueChanges
-      .pipe(debounceTime(300), startWith(''), takeUntil(this.#destroy$))
-      .subscribe((searchTerm) => {
-        this.movieService.getMovies(searchTerm as string);
-      });
-  }
 
   ngOnDestroy(): void {
     this.#destroy$.next();
