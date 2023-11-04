@@ -6,6 +6,7 @@ import { Movie } from '../../model/movie';
 import { MovieService } from '../../services/movie.service';
 import { CommonModule } from '@angular/common';
 import { MovieItemComponent } from '../movie-item/movie-item.component';
+import { MovieImageFallbackDirective } from '../../directives/movie-image-fallback/movie-image-fallback.directive';
 
 @Component({
   selector: 'ngm-movie-detail',
@@ -15,6 +16,7 @@ import { MovieItemComponent } from '../movie-item/movie-item.component';
     RouterModule,
     MovieItemComponent,
     ReactiveFormsModule,
+    MovieImageFallbackDirective,
   ],
   templateUrl: './movie-detail.component.html',
   styleUrls: ['./movie-detail.component.scss'],

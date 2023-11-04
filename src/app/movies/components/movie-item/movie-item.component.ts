@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { WordCountPipe } from '../../pipes/word-count.pipe';
+import { MovieImageFallbackDirective } from '../../directives/movie-image-fallback/movie-image-fallback.directive';
 
 export interface CommentUpdate {
   id: string;
@@ -20,7 +21,13 @@ export interface CommentUpdate {
 @Component({
   selector: 'ngm-movie-item',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule, WordCountPipe],
+  imports: [
+    FormsModule,
+    CommonModule,
+    RouterModule,
+    WordCountPipe,
+    MovieImageFallbackDirective,
+  ],
   templateUrl: './movie-item.component.html',
   styleUrls: ['./movie-item.component.scss'],
 })

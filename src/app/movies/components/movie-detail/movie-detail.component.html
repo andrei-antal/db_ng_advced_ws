@@ -100,7 +100,11 @@
         </div>
       </form>
       <div class="col-3">
-        <img class="w-100" [src]="movieForm.controls.poster.value" />
+        <img
+          ngmMovieImageFallback
+          class="w-100"
+          [src]="movieForm.controls.poster.value"
+        />
       </div>
     </div>
   </div>
