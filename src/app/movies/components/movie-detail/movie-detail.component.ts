@@ -7,7 +7,7 @@ import { MovieService } from '../../services/movie.service';
 import { CommonModule } from '@angular/common';
 import { MovieItemComponent } from '../movie-item/movie-item.component';
 import { MovieImageFallbackDirective } from '../../directives/movie-image-fallback/movie-image-fallback.directive';
-import { genreValidator } from '../../services/movies.validators';
+import { genreAsyncValidator } from '../../services/movies.validators';
 
 @Component({
   selector: 'ngm-movie-detail',
@@ -30,7 +30,9 @@ export class MovieDetailComponent implements OnInit {
     }),
     genre: this.fb.control('', {
       nonNullable: true,
-      validators: [Validators.required, genreValidator],
+      updateOn: 'blur',
+      validators: Validators.required,
+      asyncValidators: genreAsyncValidator(this.movieService),
     }),
     year: this.fb.control('', {
       nonNullable: true,

@@ -36,5 +36,21 @@
       "poster": "https://upload.wikimedia.org/wikipedia/en/1/1c/Godfather_ver1.jpg",
       "comment": ""
     }
+  ],
+  "genres": [
+    "action",
+    "adventure",
+    "comedy",
+    "crime",
+    "drama",
+    "fantasy",
+    "historical",
+    "horror",
+    "mystery",
+    "romance",
+    "satire",
+    "science fiction",
+    "thriller",
+    "western"
   ]
 }

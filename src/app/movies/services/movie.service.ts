@@ -9,6 +9,7 @@ import { environment } from '../../../environments/environment';
 })
 export class MovieService {
   #movieApi = `${environment.apiUrl}/movies`;
+  #genreApi = `${environment.apiUrl}/genres`;
   #movies$ = new Subject<Movie[]>();
   movies$ = this.#movies$.asObservable();
 
@@ -46,5 +47,9 @@ export class MovieService {
 
   updateMovie(movie: Movie): Observable<any> {
     return this.http.put(`${this.#movieApi}/${movie.id}`, movie);
+  }
+
+  getGenres(): Observable<string[]> {
+    return this.http.get<string[]>(this.#genreApi);
   }
 }
