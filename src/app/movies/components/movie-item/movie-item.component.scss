@@ -1,0 +1,11 @@
+$card-width: 575px;
+
+:host {
+    display: block;
+
+    width: $card-width;
+
+    .text-small {
+        font-size: 0.8rem;
+    }
+}

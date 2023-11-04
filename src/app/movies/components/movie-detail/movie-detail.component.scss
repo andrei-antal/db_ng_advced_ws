@@ -1,0 +1,16 @@
+:host {
+  display: block;
+
+  .card {
+    width: 750px;
+  }
+
+  .form-group {
+    width: 90%;
+    display: block;
+  }
+
+  .invalid-feedback {
+    display: block;
+  }
+}
