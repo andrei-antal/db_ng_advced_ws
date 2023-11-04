@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { map, switchMap, tap } from 'rxjs';
 import { Movie } from '../../model/movie';
 import { MovieService } from '../../services/movie.service';
@@ -8,9 +13,10 @@ import { CommonModule } from '@angular/common';
 import { MovieItemComponent } from '../movie-item/movie-item.component';
 import { MovieImageFallbackDirective } from '../../directives/movie-image-fallback/movie-image-fallback.directive';
 import {
-  genreAsyncValidator,
+  genreValidator,
   sciFiGenreYearValidator,
 } from '../../services/movies.validators';
+import { GENRES } from '../../model/movie-data';
 
 @Component({
   selector: 'ngm-movie-detail',
@@ -32,11 +38,9 @@ export class MovieDetailComponent implements OnInit {
         nonNullable: true,
         validators: Validators.required,
       }),
-      genre: this.fb.control('', {
-        nonNullable: true,
-        updateOn: 'blur',
-        validators: Validators.required,
-        asyncValidators: genreAsyncValidator(this.movieService),
+      genre: this.fb.nonNullable.array([] as string[], {
+        validators: genreValidator,
+        updateOn: 'change',
       }),
       year: this.fb.control('', {
         nonNullable: true,
@@ -50,8 +54,13 @@ export class MovieDetailComponent implements OnInit {
     },
     { validators: sciFiGenreYearValidator, updateOn: 'blur' }
   );
+  genres = GENRES;
   #isNewMovie!: boolean;
   #movie!: Movie;
+
+  get genreArray(): FormArray {
+    return this.movieForm.get('genre') as FormArray;
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -71,7 +80,11 @@ export class MovieDetailComponent implements OnInit {
             .pipe(tap((movie) => (this.#movie = movie)))
         )
       )
-      .subscribe((movie) => this.movieForm.patchValue(movie));
+      .subscribe((movie) => {
+        const genre = movie.genre.split(',').map((g) => g.trim().toLowerCase());
+        genre.forEach(() => this.addGenre());
+        this.movieForm.patchValue({ ...movie, genre });
+      });
   }
 
   onSubmit(): void {
@@ -79,6 +92,7 @@ export class MovieDetailComponent implements OnInit {
     const modifiedMovie: Movie = {
       ...this.#movie,
       ...value,
+      genre: value.genre!.filter((g: string) => g).join(', '),
     };
     if (!this.#isNewMovie) {
       this.movieService
@@ -93,5 +107,13 @@ export class MovieDetailComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/movies']);
+  }
+
+  addGenre(): void {
+    this.genreArray.push(this.fb.nonNullable.control(''));
+  }
+
+  removeGenre(index: number): void {
+    this.genreArray.removeAt(index);
   }
 }

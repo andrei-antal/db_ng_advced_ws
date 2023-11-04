@@ -6,11 +6,8 @@ import { MovieService } from './movie.service';
 export function genreValidator(
   formControl: AbstractControl
 ): ValidationErrors | null {
-  const movieGenres: string[] =
-    formControl.value &&
-    formControl.value.split(',').map((g: string) => g.trim());
-  return movieGenres &&
-    movieGenres.reduce((acc, curr) => {
+  return formControl.value &&
+    formControl.value.reduce((acc: boolean, curr: string) => {
       return acc && GENRES.includes(curr.toLowerCase());
     }, true)
     ? null
@@ -43,8 +40,7 @@ export const sciFiGenreYearValidator: ValidatorFn = (
   if (!genreCtrl || !yearCtrl) {
     return null;
   }
-  const hasSciFi = (genreCtrl.value as string)
-    .split(',')
+  const hasSciFi = (genreCtrl.value as string[])
     .map((g) => g.trim().toLowerCase())
     .includes('science fiction');
 
