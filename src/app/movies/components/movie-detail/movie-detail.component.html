@@ -108,6 +108,12 @@
             >Cancel</a
           >
         </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="movieForm.errors?.['wrongSciFiYear'] && movieForm.dirty"
+        >
+          Sci-Fi movies were introduced after 1902
+        </div>
       </form>
       <div class="col-3">
         <img

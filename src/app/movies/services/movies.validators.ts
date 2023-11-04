@@ -1,4 +1,4 @@
-import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { GENRES } from '../model/movie-data';
 import { Observable, switchMap, of, map } from 'rxjs';
 import { MovieService } from './movie.service';
@@ -34,3 +34,21 @@ export const genreAsyncValidator =
       })
     );
   };
+
+export const sciFiGenreYearValidator: ValidatorFn = (
+  ctrl: AbstractControl
+): ValidationErrors | null => {
+  const genreCtrl = ctrl.get('genre');
+  const yearCtrl = ctrl.get('year');
+  if (!genreCtrl || !yearCtrl) {
+    return null;
+  }
+  const hasSciFi = (genreCtrl.value as string)
+    .split(',')
+    .map((g) => g.trim().toLowerCase())
+    .includes('science fiction');
+
+  return hasSciFi && parseInt(yearCtrl.value, 10) < 1902
+    ? { wrongSciFiYear: true }
+    : null;
+};

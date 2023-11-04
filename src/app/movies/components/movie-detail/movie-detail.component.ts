@@ -7,7 +7,10 @@ import { MovieService } from '../../services/movie.service';
 import { CommonModule } from '@angular/common';
 import { MovieItemComponent } from '../movie-item/movie-item.component';
 import { MovieImageFallbackDirective } from '../../directives/movie-image-fallback/movie-image-fallback.directive';
-import { genreAsyncValidator } from '../../services/movies.validators';
+import {
+  genreAsyncValidator,
+  sciFiGenreYearValidator,
+} from '../../services/movies.validators';
 
 @Component({
   selector: 'ngm-movie-detail',
@@ -23,27 +26,30 @@ import { genreAsyncValidator } from '../../services/movies.validators';
   styleUrls: ['./movie-detail.component.scss'],
 })
 export class MovieDetailComponent implements OnInit {
-  movieForm = this.fb.group({
-    title: this.fb.control('', {
-      nonNullable: true,
-      validators: Validators.required,
-    }),
-    genre: this.fb.control('', {
-      nonNullable: true,
-      updateOn: 'blur',
-      validators: Validators.required,
-      asyncValidators: genreAsyncValidator(this.movieService),
-    }),
-    year: this.fb.control('', {
-      nonNullable: true,
-      validators: Validators.required,
-    }),
-    plot: this.fb.control('', {
-      nonNullable: true,
-      validators: Validators.required,
-    }),
-    poster: this.fb.control('', { nonNullable: true }),
-  });
+  movieForm = this.fb.group(
+    {
+      title: this.fb.control('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      genre: this.fb.control('', {
+        nonNullable: true,
+        updateOn: 'blur',
+        validators: Validators.required,
+        asyncValidators: genreAsyncValidator(this.movieService),
+      }),
+      year: this.fb.control('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      plot: this.fb.control('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      poster: this.fb.control('', { nonNullable: true }),
+    },
+    { validators: sciFiGenreYearValidator, updateOn: 'blur' }
+  );
   #isNewMovie!: boolean;
   #movie!: Movie;
 
