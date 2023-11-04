@@ -38,6 +38,10 @@
           <p>{{ movieComment }}</p>
         </div>
       </ng-template>
+      <div class="mt-2">
+        <p class="fw-bold">Rating:</p>
+        <ngm-rating-control [formControl]="ratingFC" />
+      </div>
       <hr />
       <button
         (click)="saveComment()"

@@ -58,4 +58,8 @@ export class MovieListComponent implements OnInit, AfterViewInit, OnDestroy {
   handleMovieDelete(movieId: string): void {
     this.movieService.deleteMovie(movieId).subscribe();
   }
+
+  handleRateMovie(rating: number, movieId: string): void {
+    this.movieService.updateRating(movieId, rating).subscribe();
+  }
 }

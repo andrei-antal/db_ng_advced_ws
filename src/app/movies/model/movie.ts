@@ -8,6 +8,7 @@ export interface Movie {
   plot: string;
   comment: string;
   poster?: string;
+  rating: number;
 }
 
 export const EMPTY_MOVIE: Movie = {
@@ -18,4 +19,5 @@ export const EMPTY_MOVIE: Movie = {
   year: '',
   comment: '',
   poster: '',
+  rating: 0,
 };

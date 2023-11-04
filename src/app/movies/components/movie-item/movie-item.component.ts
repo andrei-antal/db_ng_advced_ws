@@ -8,10 +8,11 @@ import {
 } from '@angular/core';
 import { Movie } from '../../model/movie';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { WordCountPipe } from '../../pipes/word-count.pipe';
 import { MovieImageFallbackDirective } from '../../directives/movie-image-fallback/movie-image-fallback.directive';
+import { RatingControlComponent } from '../rating-control/rating-control.component';
 
 export interface CommentUpdate {
   id: string;
@@ -23,10 +24,12 @@ export interface CommentUpdate {
   standalone: true,
   imports: [
     FormsModule,
+    ReactiveFormsModule,
     CommonModule,
     RouterModule,
     WordCountPipe,
     MovieImageFallbackDirective,
+    RatingControlComponent,
   ],
   templateUrl: './movie-item.component.html',
   styleUrls: ['./movie-item.component.scss'],
@@ -37,6 +40,9 @@ export class MovieItemComponent implements OnChanges {
   @Output() commentUpdate = new EventEmitter<CommentUpdate>();
   @Output() movieDelete = new EventEmitter<string>();
 
+  ratingFC = new FormControl(0, { nonNullable: true });
+  @Output() rateMovie = this.ratingFC.valueChanges;
+
   commentSaved = false;
   movieComment = '';
 
@@ -44,6 +50,7 @@ export class MovieItemComponent implements OnChanges {
     if (changes['movie']) {
       this.movieComment = changes['movie'].currentValue.comment;
       this.commentSaved = this.movieComment.length > 0;
+      this.ratingFC.setValue(this.movie.rating, { emitEvent: false });
     }
   }
 

@@ -12,6 +12,7 @@
       *ngFor="let movie of movies; trackBy: trackByFn"
       (commentUpdate)="handleCommentUpdate($event)"
       (movieDelete)="handleMovieDelete($event)"
+      (rateMovie)="handleRateMovie($event, movie.id)"
       [movie]="movie"
     ></ngm-movie-item>
   </div>

@@ -1,0 +1,7 @@
+<i
+  role="button"
+  *ngFor="let state of starStates; let i = index"
+  class="fa-solid fa-star"
+  [class.filled-star]="state"
+  (click)="ratingChange(i + 1)"
+></i>
