@@ -1,13 +1,25 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CommentUpdate,
   MovieItemComponent,
 } from '../movie-item/movie-item.component';
 import { MovieService } from '../../services/movie.service';
-import { Subject, debounceTime, startWith, switchMap, takeUntil } from 'rxjs';
+import {
+  Subject,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  fromEvent,
+  map,
+  scan,
+  startWith,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TmdbService } from '../../services/tmdb.service';
 
 @Component({
   selector: 'ngm-movie-list',
@@ -25,10 +37,23 @@ export class MovieListComponent implements OnDestroy {
   #destroy$ = new Subject<void>();
   searchField = new FormControl('', { nonNullable: true });
 
-  movies$ = this.searchField.valueChanges.pipe(
-    debounceTime(300),
-    startWith(undefined),
-    switchMap((searchTerm) => this.movieService.getMovies(searchTerm)),
+  #tmdbService = inject(TmdbService);
+
+  pageByScroll$ = fromEvent(window, 'scroll').pipe(
+    map(() => window.scrollY),
+    filter(
+      (current) => current >= document.body.clientHeight - window.innerHeight
+    ),
+    debounceTime(200),
+    distinctUntilChanged(),
+    startWith(1),
+    scan((acc) => acc + 1),
+    takeUntil(this.#destroy$)
+  );
+
+  movies$ = this.pageByScroll$.pipe(
+    switchMap((page) => this.#tmdbService.getMovies(page)),
+    scan((acc: any, cur) => [...acc, ...cur], []),
     takeUntil(this.#destroy$)
   );
 
