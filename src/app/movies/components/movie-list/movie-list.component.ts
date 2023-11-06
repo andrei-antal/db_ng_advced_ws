@@ -20,6 +20,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TmdbService } from '../../services/tmdb.service';
+import { HasRoleDirective } from '../../directives/has-role/has-role.directive';
 
 @Component({
   selector: 'ngm-movie-list',
@@ -29,6 +30,7 @@ import { TmdbService } from '../../services/tmdb.service';
     MovieItemComponent,
     RouterModule,
     ReactiveFormsModule,
+    HasRoleDirective,
   ],
   templateUrl: './movie-list.component.html',
   styleUrls: ['./movie-list.component.scss'],

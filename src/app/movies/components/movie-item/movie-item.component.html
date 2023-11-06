@@ -38,7 +38,7 @@
           <p>{{ movieComment }}</p>
         </div>
       </ng-template>
-      <div class="mt-2">
+      <div class="mt-2" *ngmHasRole="'User'">
         <p class="fw-bold">Rating:</p>
         <ngm-rating-control [formControl]="ratingFC" />
       </div>
@@ -62,11 +62,19 @@
         <i class="fa-solid fa-ban"></i>
         Clear comment
       </button>
-      <a [routerLink]="['/movies', movie.id]" class="btn btn-primary">
+      <a
+        [routerLink]="['/movies', movie.id]"
+        class="btn btn-primary"
+        *ngmHasRole="'Admin'"
+      >
         <i class="fa-solid fa-edit"></i>
         Edit
       </a>
-      <button (click)="movieDelete.emit(movie.id)" class="btn btn-danger mx-2">
+      <button
+        (click)="movieDelete.emit(movie.id)"
+        class="btn btn-danger mx-2"
+        *ngmHasRole="'Admin'"
+      >
         <i class="fa-solid fa-trash"></i>
         Delete
       </button>

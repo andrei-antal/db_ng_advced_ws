@@ -1,4 +1,6 @@
-<a routerLink="/movies/new" class="btn btn-primary">New Movie</a>
+<a routerLink="/movies/new" class="btn btn-primary" *ngmHasRole="'Admin'"
+  >New Movie</a
+>
 <div class="py-4 mb-4 d-flex justify-content-center">
   <input placeholder="Search movies" [formControl]="searchField" class="p-2" />
 </div>

@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
 import { WordCountPipe } from '../../pipes/word-count.pipe';
 import { MovieImageFallbackDirective } from '../../directives/movie-image-fallback/movie-image-fallback.directive';
 import { RatingControlComponent } from '../rating-control/rating-control.component';
+import { HasRoleDirective } from '../../directives/has-role/has-role.directive';
 
 export interface CommentUpdate {
   id: string;
@@ -30,6 +31,7 @@ export interface CommentUpdate {
     WordCountPipe,
     MovieImageFallbackDirective,
     RatingControlComponent,
+    HasRoleDirective,
   ],
   templateUrl: './movie-item.component.html',
   styleUrls: ['./movie-item.component.scss'],
