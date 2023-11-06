@@ -1,4 +1,6 @@
 import { Route } from '@angular/router';
+import { Role } from './services/auth.service';
+import { hasRoleGuard } from './guards/has-role.guard';
 
 export const movieRoutes: Route[] = [
   {
@@ -14,6 +16,10 @@ export const movieRoutes: Route[] = [
       import('./components/movie-detail/movie-detail.component').then(
         (c) => c.MovieDetailComponent
       ),
+    data: {
+      roles: [Role.Admin],
+    },
+    canActivate: [hasRoleGuard],
   },
   {
     path: ':id',
@@ -21,5 +27,9 @@ export const movieRoutes: Route[] = [
       import('./components/movie-detail/movie-detail.component').then(
         (c) => c.MovieDetailComponent
       ),
+    data: {
+      roles: [Role.Admin],
+    },
+    canActivate: [hasRoleGuard],
   },
 ];
