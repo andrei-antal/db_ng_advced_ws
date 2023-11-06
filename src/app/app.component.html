@@ -5,6 +5,13 @@
       ngMovies
     </h1>
   </a>
+  <button
+    class="btn btn-light mx-3"
+    *ngIf="authService.isAuthenticated"
+    (click)="logout()"
+  >
+    Logout {{ authService.role }}
+  </button>
 </nav>
 <main class="p-3">
   <router-outlet></router-outlet>

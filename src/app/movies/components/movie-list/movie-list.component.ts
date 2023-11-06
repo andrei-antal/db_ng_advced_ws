@@ -51,10 +51,16 @@ export class MovieListComponent implements OnDestroy {
     takeUntil(this.#destroy$)
   );
 
-  movies$ = this.pageByScroll$.pipe(
-    switchMap((page) => this.#tmdbService.getMovies(page)),
-    scan((acc: any, cur) => [...acc, ...cur], []),
-    takeUntil(this.#destroy$)
+  // movies$ = this.pageByScroll$.pipe(
+  //   switchMap((page) => this.#tmdbService.getMovies(page)),
+  //   scan((acc: any, cur) => [...acc, ...cur], []),
+  //   takeUntil(this.#destroy$)
+  // );
+
+  movies$ = this.searchField.valueChanges.pipe(
+    debounceTime(300),
+    startWith(''),
+    switchMap((searchTerm) => this.movieService.getMovies(searchTerm))
   );
 
   constructor(public movieService: MovieService) {}
