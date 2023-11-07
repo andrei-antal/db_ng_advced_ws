@@ -17,7 +17,7 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TmdbService } from '../../services/tmdb.service';
 import { HasRoleDirective } from '../../directives/has-role/has-role.directive';
@@ -26,7 +26,7 @@ import { HasRoleDirective } from '../../directives/has-role/has-role.directive';
   selector: 'ngm-movie-list',
   standalone: true,
   imports: [
-    CommonModule,
+    AsyncPipe,
     MovieItemComponent,
     RouterModule,
     ReactiveFormsModule,
@@ -70,10 +70,6 @@ export class MovieListComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.#destroy$.next();
     this.#destroy$.complete();
-  }
-
-  trackByFn(_: any, movie: any): number {
-    return movie.id;
   }
 
   handleCommentUpdate(commentPayload: CommentUpdate): void {

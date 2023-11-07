@@ -17,67 +17,67 @@
       />
       <div class="col-8 card-text text-small">{{ movie.plot }}</div>
     </div>
-    <ng-container *ngIf="editable">
-      <div *ngIf="!commentSaved; else readonlyComment">
-        <textarea
-          class="mb-1 w-100"
-          placeholder="Comment"
-          [(ngModel)]="movieComment"
-        ></textarea>
-        <small
-          [style.color]="
-            movieComment.trim().length === 0 ? 'darkred' : 'darkgreen'
-          "
-        >
-          {{ movieComment | wordCount }}
-        </small>
-      </div>
-      <ng-template #readonlyComment>
-        <div [hidden]="!commentSaved">
-          <label class="font-weight-bold"> Comment: </label>
-          <p>{{ movieComment }}</p>
-        </div>
-      </ng-template>
-      <div class="mt-2" *ngmHasRole="'User'">
-        <p class="fw-bold">Rating:</p>
-        <ngm-rating-control [formControl]="ratingFC" />
-      </div>
-      <hr />
-      <button
-        (click)="saveComment()"
-        [disabled]="movieComment.trim().length === 0"
-        class="btn btn-outline-success"
+    @if (editable){ @if(!commentSaved) {
+    <div>
+      <textarea
+        class="mb-1 w-100"
+        placeholder="Comment"
+        [(ngModel)]="movieComment"
+      ></textarea>
+      <small
+        [style.color]="
+          movieComment.trim().length === 0 ? 'darkred' : 'darkgreen'
+        "
       >
-        <i
-          class="fa-solid"
-          [ngClass]="commentSaved ? 'fa-pencil-alt' : 'fa-check'"
-        ></i>
-        {{ commentSaved ? "Edit" : "Save" }} comment
-      </button>
-      <button
-        (click)="clearComment()"
-        [disabled]="movieComment === ''"
-        class="btn btn-outline-warning mx-2"
-      >
-        <i class="fa-solid fa-ban"></i>
-        Clear comment
-      </button>
-      <a
-        [routerLink]="['/movies', movie.id]"
-        class="btn btn-primary"
-        *ngmHasRole="'Admin'"
-      >
-        <i class="fa-solid fa-edit"></i>
-        Edit
-      </a>
-      <button
-        (click)="movieDelete.emit(movie.id)"
-        class="btn btn-danger mx-2"
-        *ngmHasRole="'Admin'"
-      >
-        <i class="fa-solid fa-trash"></i>
-        Delete
-      </button>
-    </ng-container>
+        {{ movieComment | wordCount }}
+      </small>
+    </div>
+    } @else {
+    <div [hidden]="!commentSaved">
+      <label class="font-weight-bold"> Comment: </label>
+      <p>{{ movieComment }}</p>
+    </div>
+    }
+    <div class="mt-2" *ngmHasRole="'User'">
+      <p class="fw-bold">Rating:</p>
+      <ngm-rating-control [formControl]="ratingFC" />
+    </div>
+    <hr />
+    <button
+      (click)="saveComment()"
+      [disabled]="movieComment.trim().length === 0"
+      class="btn btn-outline-success"
+    >
+      <i
+        class="fa-solid"
+        [ngClass]="commentSaved ? 'fa-pencil-alt' : 'fa-check'"
+      ></i>
+      {{ commentSaved ? "Edit" : "Save" }} comment
+    </button>
+    <button
+      (click)="clearComment()"
+      [disabled]="movieComment === ''"
+      class="btn btn-outline-warning mx-2"
+    >
+      <i class="fa-solid fa-ban"></i>
+      Clear comment
+    </button>
+    <a
+      [routerLink]="['/movies', movie.id]"
+      class="btn btn-primary"
+      *ngmHasRole="'Admin'"
+    >
+      <i class="fa-solid fa-edit"></i>
+      Edit
+    </a>
+    <button
+      (click)="movieDelete.emit(movie.id)"
+      class="btn btn-danger mx-2"
+      *ngmHasRole="'Admin'"
+    >
+      <i class="fa-solid fa-trash"></i>
+      Delete
+    </button>
+    }
   </div>
 </div>

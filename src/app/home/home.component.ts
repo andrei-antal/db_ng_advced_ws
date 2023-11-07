@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../movies/services/auth.service';
@@ -7,7 +6,7 @@ import { AuthService } from '../movies/services/auth.service';
 @Component({
   selector: 'ngm-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [RouterModule, ReactiveFormsModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })

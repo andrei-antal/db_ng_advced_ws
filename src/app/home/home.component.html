@@ -1,15 +1,10 @@
-<ng-container *ngIf="authService.isAuthenticated">
-  <h1>Welcome!</h1>
-  <a class="btn btn-outline-primary" routerLink="movies">
-    Navigate to movies section
-  </a>
-</ng-container>
-<div
-  class="card"
-  style="width: 30vw"
-  *ngIf="!authService.isAuthenticated"
-  [formGroup]="loginForm"
->
+@if (authService.isAuthenticated) {
+<h1>Welcome!</h1>
+<a class="btn btn-outline-primary" routerLink="movies">
+  Navigate to movies section
+</a>
+} @else {
+<div class="card" style="width: 30vw" [formGroup]="loginForm">
   <form class="card-body">
     <h3 class="card-title">Movies app login form</h3>
     <div class="mb-3">
@@ -23,7 +18,10 @@
     <button href="#" class="btn btn-primary" (click)="submit()">Log in</button>
   </form>
 </div>
+}
 <br />
-<div class="alert alert-danger" style="width: 30vw" *ngIf="error">
+@if (error) {
+<div class="alert alert-danger" style="width: 30vw">
   {{ error }}
 </div>
+}

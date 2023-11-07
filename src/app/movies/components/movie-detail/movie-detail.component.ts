@@ -4,7 +4,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { map, switchMap, tap } from 'rxjs';
 import { Movie } from '../../model/movie';
 import { MovieService } from '../../services/movie.service';
-import { CommonModule } from '@angular/common';
 import { MovieItemComponent } from '../movie-item/movie-item.component';
 import { MovieImageFallbackDirective } from '../../directives/movie-image-fallback/movie-image-fallback.directive';
 import { sciFiGenreYearValidator } from '../../services/movies.validators';
@@ -15,7 +14,6 @@ import { GenreControlComponent } from '../genre-control/genre-control.component'
   selector: 'ngm-movie-detail',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     MovieItemComponent,
     ReactiveFormsModule,

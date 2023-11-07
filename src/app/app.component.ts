@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { MovieListComponent } from './movies/components/movie-list/movie-list.component';
@@ -7,7 +6,7 @@ import { AuthService } from './movies/services/auth.service';
 @Component({
   selector: 'ngm-root',
   standalone: true,
-  imports: [CommonModule, MovieListComponent, RouterModule],
+  imports: [MovieListComponent, RouterModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })

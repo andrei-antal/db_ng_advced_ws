@@ -7,7 +7,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { Movie } from '../../model/movie';
-import { CommonModule } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { WordCountPipe } from '../../pipes/word-count.pipe';
@@ -26,7 +26,7 @@ export interface CommentUpdate {
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    CommonModule,
+    NgClass,
     RouterModule,
     WordCountPipe,
     MovieImageFallbackDirective,

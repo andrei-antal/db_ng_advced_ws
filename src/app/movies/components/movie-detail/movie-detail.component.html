@@ -12,26 +12,18 @@
             placeholder="Enter title"
             formControlName="title"
           />
-          <div
-            class="invalid-feedback"
-            *ngIf="
-              movieForm.controls.title.invalid && movieForm.controls.title.dirty
-            "
-          >
-            Title required
-          </div>
+          @if (movieForm.controls.title.invalid &&
+          movieForm.controls.title.dirty) {
+          <div class="invalid-feedback">Title required</div>
+          }
         </div>
         <div class="form-group">
           <label for="movieGenre" class="d-block">Genre</label>
           <ngm-genre-control formControlName="genre"></ngm-genre-control>
-          <div
-            class="invalid-feedback"
-            *ngIf="
-              movieForm.controls.genre.invalid && movieForm.controls.genre.dirty
-            "
-          >
-            Genre required
-          </div>
+          @if (movieForm.controls.genre.invalid &&
+          movieForm.controls.genre.dirty) {
+          <div class="invalid-feedback">Genre required</div>
+          }
         </div>
         <div class="form-group">
           <label for="movieYear">Year</label>
@@ -42,14 +34,10 @@
             placeholder="Enter year"
             formControlName="year"
           />
-          <div
-            class="invalid-feedback"
-            *ngIf="
-              movieForm.controls.year.invalid && movieForm.controls.year.dirty
-            "
-          >
-            Year required
-          </div>
+          @if (movieForm.controls.year.invalid &&
+          movieForm.controls.year.dirty){
+          <div class="invalid-feedback">Year required</div>
+          }
         </div>
         <div class="form-group">
           <label for="moviePlot">Plot</label>
@@ -60,14 +48,10 @@
             placeholder="Enter plot"
             formControlName="plot"
           />
-          <div
-            class="invalid-feedback"
-            *ngIf="
-              movieForm.controls.plot.invalid && movieForm.controls.plot.dirty
-            "
-          >
-            Plot required
-          </div>
+          @if (movieForm.controls.plot.invalid &&
+          movieForm.controls.plot.dirty){
+          <div class="invalid-feedback">Plot required</div>
+          }
         </div>
         <div class="form-group">
           <label for="moviePoster">Poster</label>
@@ -91,12 +75,11 @@
             >Cancel</a
           >
         </div>
-        <div
-          class="invalid-feedback"
-          *ngIf="movieForm.errors?.['wrongSciFiYear'] && movieForm.dirty"
-        >
+        @if (movieForm.errors?.['wrongSciFiYear'] && movieForm.dirty){
+        <div class="invalid-feedback">
           Sci-Fi movies were introduced after 1902
         </div>
+        }
       </form>
       <div class="col-3">
         <img
