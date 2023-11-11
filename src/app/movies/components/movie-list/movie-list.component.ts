@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CommentUpdate,
@@ -23,6 +23,7 @@ import { TmdbService } from '../../services/tmdb.service';
 import { HasRoleDirective } from '../../directives/has-role/has-role.directive';
 import { Store } from '@ngrx/store';
 import { MovieState, getAllMovies } from '../../store/movies.reducers';
+import { loadMovies } from '../../store/movies.actions';
 
 @Component({
   selector: 'ngm-movie-list',
@@ -37,7 +38,7 @@ import { MovieState, getAllMovies } from '../../store/movies.reducers';
   templateUrl: './movie-list.component.html',
   styleUrls: ['./movie-list.component.scss'],
 })
-export class MovieListComponent implements OnDestroy {
+export class MovieListComponent implements OnInit, OnDestroy {
   #destroy$ = new Subject<void>();
   searchField = new FormControl('', { nonNullable: true });
 
@@ -71,6 +72,10 @@ export class MovieListComponent implements OnDestroy {
     public movieService: MovieService,
     private store: Store<MovieState>
   ) {}
+
+  ngOnInit(): void {
+    this.store.dispatch(loadMovies());
+  }
 
   ngOnDestroy(): void {
     this.#destroy$.next();

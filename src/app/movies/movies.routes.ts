@@ -3,8 +3,10 @@ import { Role } from './services/auth.service';
 import { hasRoleGuard } from './guards/has-role.guard';
 import { StoreModule } from '@ngrx/store';
 import { importProvidersFrom } from '@angular/core';
+import { EffectsModule } from '@ngrx/effects';
 
 import { reducer as moviesListReducer } from './store/movies.reducers';
+import * as MoviesEffects from './store/movies.effects';
 
 export const movieRoutes: Route[] = [
   {
@@ -15,7 +17,8 @@ export const movieRoutes: Route[] = [
       ),
     providers: [
       importProvidersFrom(
-        StoreModule.forFeature('moviesFeature', moviesListReducer)
+        StoreModule.forFeature('moviesFeature', moviesListReducer),
+        EffectsModule.forFeature([MoviesEffects])
       ),
     ],
   },
