@@ -21,6 +21,8 @@ import { AsyncPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TmdbService } from '../../services/tmdb.service';
 import { HasRoleDirective } from '../../directives/has-role/has-role.directive';
+import { Store } from '@ngrx/store';
+import { MovieState, getAllMovies } from '../../store/movies.reducers';
 
 @Component({
   selector: 'ngm-movie-list',
@@ -62,10 +64,13 @@ export class MovieListComponent implements OnDestroy {
   movies$ = this.searchField.valueChanges.pipe(
     debounceTime(300),
     startWith(''),
-    switchMap((searchTerm) => this.movieService.getMovies(searchTerm))
+    switchMap((searchTerm) => this.store.select(getAllMovies))
   );
 
-  constructor(public movieService: MovieService) {}
+  constructor(
+    public movieService: MovieService,
+    private store: Store<MovieState>
+  ) {}
 
   ngOnDestroy(): void {
     this.#destroy$.next();
