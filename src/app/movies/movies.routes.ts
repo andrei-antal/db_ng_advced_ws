@@ -1,6 +1,10 @@
 import { Route } from '@angular/router';
 import { Role } from './services/auth.service';
 import { hasRoleGuard } from './guards/has-role.guard';
+import { StoreModule } from '@ngrx/store';
+import { importProvidersFrom } from '@angular/core';
+
+import { reducer as moviesListReducer } from './store/movies.reducers';
 
 export const movieRoutes: Route[] = [
   {
@@ -9,6 +13,11 @@ export const movieRoutes: Route[] = [
       import('./components/movie-list/movie-list.component').then(
         (c) => c.MovieListComponent
       ),
+    providers: [
+      importProvidersFrom(
+        StoreModule.forFeature('moviesFeature', moviesListReducer)
+      ),
+    ],
   },
   {
     path: 'new',
