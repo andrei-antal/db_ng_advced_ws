@@ -9,6 +9,9 @@ import { MovieImageFallbackDirective } from '../../directives/movie-image-fallba
 import { sciFiGenreYearValidator } from '../../services/movies.validators';
 import { GENRES } from '../../model/movie-data';
 import { GenreControlComponent } from '../genre-control/genre-control.component';
+import { Store } from '@ngrx/store';
+import { MovieState } from '../../store/movies.reducers';
+import { addMovie } from '../../store/movies.actions';
 
 @Component({
   selector: 'ngm-movie-detail',
@@ -53,6 +56,7 @@ export class MovieDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private store: Store<MovieState>,
     private movieService: MovieService,
     private fb: FormBuilder,
     private router: Router
@@ -86,9 +90,7 @@ export class MovieDetailComponent implements OnInit {
         .createMovie(modifiedMovie)
         .subscribe(() => this.goBack());
     } else {
-      this.movieService
-        .updateMovie(modifiedMovie)
-        .subscribe(() => this.goBack());
+      this.store.dispatch(addMovie(modifiedMovie));
     }
   }
 

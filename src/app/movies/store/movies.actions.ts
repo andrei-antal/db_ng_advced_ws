@@ -12,3 +12,5 @@ export const loadMoviesFail = createAction(
   '[Movies] Load movies fail',
   props<{ movies: Movie[] }>()
 );
+
+export const addMovie = createAction('[Movie] Add movie', props<Movie>());
