@@ -20,3 +20,22 @@ export const loadMovies$ = createEffect(
     ) as Observable<Action>,
   { functional: true }
 );
+
+export const updateMovie$ = createEffect(
+  (actions$ = inject(Actions), moviesService = inject(MovieService)) =>
+    actions$.pipe(
+      ofType(MovieActions.updateMovie),
+      mergeMap((movie) =>
+        moviesService
+          .updateMovie(movie)
+          .pipe(
+            map((res: any) =>
+              MovieActions.updateMovieSuccess({ id: res.id, changes: res })
+            )
+          )
+      )
+    ),
+  {
+    functional: true,
+  }
+);

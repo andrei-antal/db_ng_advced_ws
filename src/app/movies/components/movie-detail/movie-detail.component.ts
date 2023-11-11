@@ -9,9 +9,9 @@ import { MovieImageFallbackDirective } from '../../directives/movie-image-fallba
 import { sciFiGenreYearValidator } from '../../services/movies.validators';
 import { GENRES } from '../../model/movie-data';
 import { GenreControlComponent } from '../genre-control/genre-control.component';
-import { Store } from '@ngrx/store';
-import { MovieState } from '../../store/movies.reducers';
-import { addMovie } from '../../store/movies.actions';
+import { Store, select } from '@ngrx/store';
+import { MovieState, getMovieById } from '../../store/movies.reducers';
+import { addMovie, updateMovie } from '../../store/movies.actions';
 
 @Component({
   selector: 'ngm-movie-detail',
@@ -68,14 +68,12 @@ export class MovieDetailComponent implements OnInit {
         map((paramsMap) => paramsMap.get('id') as string),
         tap((movieId) => (this.#isNewMovie = !!movieId)),
         switchMap((movieId) =>
-          this.movieService
-            .getMovie(movieId)
-            .pipe(tap((movie) => (this.#movie = movie)))
+          this.store.pipe(select(getMovieById, { movieId }))
         )
       )
       .subscribe((movie) => {
-        this.#movie = movie;
-        this.movieForm.patchValue(movie);
+        this.#movie = movie as Movie;
+        this.movieForm.patchValue(movie as Movie);
       });
   }
 
@@ -86,12 +84,12 @@ export class MovieDetailComponent implements OnInit {
       ...value,
     };
     if (!this.#isNewMovie) {
-      this.movieService
-        .createMovie(modifiedMovie)
-        .subscribe(() => this.goBack());
+      this.store.dispatch(updateMovie(modifiedMovie));
     } else {
       this.store.dispatch(addMovie(modifiedMovie));
     }
+
+    this.goBack();
   }
 
   goBack() {

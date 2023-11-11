@@ -9,15 +9,25 @@ import {
 import { Movie } from '../model/movie';
 
 import * as MoviesActions from './movies.actions';
+import {
+  Dictionary,
+  EntityAdapter,
+  EntityState,
+  createEntityAdapter,
+} from '@ngrx/entity';
+
+const adapter: EntityAdapter<Movie> = createEntityAdapter<Movie>();
+
+const initialEntityState = adapter.getInitialState();
 
 export interface MovieState {
-  movies: Movie[];
+  movies: EntityState<Movie>;
   loading: boolean;
   error: any;
 }
 
 const initialState: MovieState = {
-  movies: [],
+  movies: initialEntityState,
   loading: false,
   error: undefined,
 };
@@ -32,7 +42,7 @@ const moviesReducer = createReducer(
     ...state,
     loading: false,
     error: undefined,
-    movies,
+    movies: adapter.setAll(movies, state.movies),
   })),
   on(MoviesActions.loadMoviesFail, (state, error) => ({
     ...state,
@@ -41,7 +51,11 @@ const moviesReducer = createReducer(
   })),
   on(MoviesActions.addMovie, (state, movie) => ({
     ...state,
-    movies: [...state.movies, movie],
+    movies: adapter.addOne(movie, state.movies),
+  })),
+  on(MoviesActions.updateMovieSuccess, (state, movie) => ({
+    ...state,
+    movies: adapter.updateOne(movie, state.movies),
   }))
 );
 
@@ -49,7 +63,8 @@ export function reducer(state: MovieState | undefined, action: Action) {
   return moviesReducer(state, action);
 }
 
-export const getMovies = (state: MovieState): Movie[] => state.movies;
+const getMovies = (state: MovieState): Movie[] =>
+  adapter.getSelectors().selectAll(state.movies);
 
 const getMoviesFeatureState =
   createFeatureSelector<MovieState>('moviesFeature');
@@ -57,4 +72,19 @@ const getMoviesFeatureState =
 export const getAllMovies = createSelector<MovieState, MovieState, Movie[]>(
   getMoviesFeatureState,
   getMovies
+);
+
+export const getMovieEntities = (state: MovieState): Dictionary<Movie> =>
+  adapter.getSelectors().selectEntities(state.movies);
+
+export const getAllEntities = createSelector<
+  MovieState,
+  MovieState,
+  Dictionary<Movie>
+>(getMoviesFeatureState, getMovieEntities);
+
+export const getMovieById = createSelector(
+  getAllEntities,
+  (movies: Dictionary<Movie>, props: { movieId: string }) =>
+    movies[props.movieId]
 );
