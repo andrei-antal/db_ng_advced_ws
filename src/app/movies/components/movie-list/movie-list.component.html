@@ -5,12 +5,12 @@
   <input placeholder="Search movies" [formControl]="searchField" class="p-2" />
 </div>
 
-@if(movies$ | async; as movies) { @if(movies.length) {
+@if(movies().length) {
 <div
   class="row row-cols-1 row-cols-md-2 justify-content-center"
   style="row-gap: 1rem"
 >
-  @for (movie of movies; track movie.id) {
+  @for (movie of movies(); track movie.id) {
   <ngm-movie-item
     (commentUpdate)="handleCommentUpdate($event)"
     (movieDelete)="handleMovieDelete($event)"
@@ -24,4 +24,4 @@
   <i class="far fa-window-close"></i>
   No movies found
 </div>
-} }
+}

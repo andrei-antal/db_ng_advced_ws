@@ -1,14 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import {
+  Component,
+  OnInit,
+  WritableSignal,
+  effect,
+  signal,
+} from '@angular/core';
+import {
+  ActivatedRoute,
+  ParamMap,
+  Router,
+  RouterModule,
+} from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { map, switchMap, tap } from 'rxjs';
-import { Movie } from '../../model/movie';
+import { Observable, map, switchMap, tap } from 'rxjs';
+import { EMPTY_MOVIE, Movie } from '../../model/movie';
 import { MovieService } from '../../services/movie.service';
 import { MovieItemComponent } from '../movie-item/movie-item.component';
 import { MovieImageFallbackDirective } from '../../directives/movie-image-fallback/movie-image-fallback.directive';
 import { sciFiGenreYearValidator } from '../../services/movies.validators';
 import { GENRES } from '../../model/movie-data';
 import { GenreControlComponent } from '../genre-control/genre-control.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'ngm-movie-detail',
@@ -23,7 +35,7 @@ import { GenreControlComponent } from '../genre-control/genre-control.component'
   templateUrl: './movie-detail.component.html',
   styleUrls: ['./movie-detail.component.scss'],
 })
-export class MovieDetailComponent implements OnInit {
+export class MovieDetailComponent {
   movieForm = this.fb.group(
     {
       title: this.fb.control('', {
@@ -49,36 +61,29 @@ export class MovieDetailComponent implements OnInit {
   );
   genres = GENRES;
   #isNewMovie!: boolean;
-  #movie!: Movie;
+  #movie = signal<Movie>(EMPTY_MOVIE);
 
   constructor(
     private route: ActivatedRoute,
     private movieService: MovieService,
     private fb: FormBuilder,
     private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.route.paramMap
-      .pipe(
-        map((paramsMap) => paramsMap.get('id') as string),
-        tap((movieId) => (this.#isNewMovie = !!movieId)),
-        switchMap((movieId) =>
-          this.movieService
-            .getMovie(movieId)
-            .pipe(tap((movie) => (this.#movie = movie)))
-        )
-      )
-      .subscribe((movie) => {
-        this.#movie = movie;
+  ) {
+    const paramMap = toSignal(this.route.paramMap);
+    effect(async () => {
+      const movieId = paramMap()?.get('id');
+      if (movieId) {
+        const movie = await this.movieService.getMovie(movieId);
+        this.#movie.set(movie);
         this.movieForm.patchValue(movie);
-      });
+      }
+    });
   }
 
   onSubmit(): void {
     const { value } = this.movieForm;
     const modifiedMovie: Movie = {
-      ...this.#movie,
+      ...this.#movie(),
       ...value,
     };
     if (!this.#isNewMovie) {

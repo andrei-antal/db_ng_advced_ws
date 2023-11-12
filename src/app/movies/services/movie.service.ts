@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   BehaviorSubject,
   Observable,
   catchError,
+  firstValueFrom,
   interval,
   merge,
   of,
@@ -22,48 +23,41 @@ const REFRESH_INTERVAL = 60000;
 export class MovieService {
   #movieApi = `${environment.apiUrl}/movies`;
   #genreApi = `${environment.apiUrl}/genres`;
-  #cache$!: Observable<Movie[]>;
-  #reload$ = new BehaviorSubject(null);
+
+  readonly movies = signal<Movie[]>([]);
 
   constructor(private http: HttpClient) {}
 
-  getMovies(searchTerm?: string): Observable<Movie[]> {
-    if (!this.#cache$ || searchTerm !== undefined) {
-      this.#cache$ = merge(this.#reload$, interval(REFRESH_INTERVAL)).pipe(
-        switchMap(() =>
-          this.http
-            .get<Movie[]>(
-              `${this.#movieApi}?q=${searchTerm ? searchTerm.trim() : ''}`
-            )
-            .pipe(catchError(() => of([])))
-        ),
-        shareReplay(1)
-      );
-    }
-    return this.#cache$;
+  async getMovies(searchTerm?: string): Promise<void> {
+    const movies = await firstValueFrom(
+      this.http
+        .get<Movie[]>(
+          `${this.#movieApi}?q=${searchTerm ? searchTerm.trim() : ''}`
+        )
+        .pipe(catchError(() => of([])))
+    );
+    this.movies.set(movies);
   }
 
-  reloadData() {
-    this.#reload$.next(null);
+  async updateComment(movieId: string, newComment: string): Promise<void> {
+    await firstValueFrom(
+      this.http.patch<Movie>(`${this.#movieApi}/${movieId}`, {
+        comment: newComment,
+      })
+    );
+    await this.getMovies();
   }
 
-  updateComment(movieId: string, newComment: string): Observable<Movie> {
-    return this.http
-      .patch<Movie>(`${this.#movieApi}/${movieId}`, { comment: newComment })
-      .pipe(tap(() => this.reloadData()));
+  async deleteMovie(movieId: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.#movieApi}/${movieId}`));
+    await this.getMovies();
   }
 
-  deleteMovie(movieId: string): Observable<any> {
-    return this.http
-      .delete(`${this.#movieApi}/${movieId}`)
-      .pipe(tap(() => this.reloadData()));
-  }
-
-  getMovie(movieId: string): Observable<Movie> {
+  getMovie(movieId: string): Promise<Movie> {
     if (!movieId) {
-      return of(EMPTY_MOVIE);
+      return Promise.resolve(EMPTY_MOVIE);
     }
-    return this.http.get<Movie>(`${this.#movieApi}/${movieId}`);
+    return firstValueFrom(this.http.get<Movie>(`${this.#movieApi}/${movieId}`));
   }
 
   createMovie(movie: Movie): Observable<any> {
@@ -78,9 +72,10 @@ export class MovieService {
     return this.http.get<string[]>(this.#genreApi);
   }
 
-  updateRating(movieId: string, rating: number): Observable<Movie> {
-    return this.http
-      .patch<Movie>(`${this.#movieApi}/${movieId}`, { rating })
-      .pipe(tap(() => this.reloadData()));
+  async updateRating(movieId: string, rating: number): Promise<void> {
+    await firstValueFrom(
+      this.http.patch<Movie>(`${this.#movieApi}/${movieId}`, { rating })
+    );
+    await this.getMovies();
   }
 }
